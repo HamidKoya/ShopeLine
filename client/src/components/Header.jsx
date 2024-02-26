@@ -33,9 +33,8 @@ const Header = () => {
               <FiUser className="mr-1" /> Profile
             </button>
             <ul
-              className={`absolute ${
-                isProfileMenuOpen ? "block" : "hidden"
-              } bg-gray-800 p-2 mt-2 space-y-2 text-white`}
+              className={`absolute ${isProfileMenuOpen ? "block" : "hidden"
+                } bg-gray-800 p-2 mt-2 space-y-2 text-white`}
             >
               <li>
                 <Link to="/profile">
@@ -84,9 +83,8 @@ const Header = () => {
                 <FiUser className="mr-1" /> Profile
               </button>
               <ul
-                className={`absolute ${
-                  isProfileMenuOpen ? "block" : "hidden"
-                } bg-gray-800 p-2 mt-2 space-y-2 text-white`}
+                className={`absolute ${isProfileMenuOpen ? "block" : "hidden"
+                  } bg-gray-800 p-2 mt-2 space-y-2 text-white`}
               >
                 <li>
                   <Link to="/profile">
