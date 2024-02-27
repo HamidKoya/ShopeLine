@@ -1,18 +1,27 @@
-import React from 'react'
-import { products } from '../data/products'
-import Product from '../components/Product'
-
+import React, { useEffect, useState } from "react";
+import { products } from "../data/products";
+import Product from "../components/Product";
+import axios from 'axios'
 
 const HomeScreen = () => {
-  return (
-    <div className='grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 bg-cyan-400'>
-      {
-        products.map((product, i) => (
-          <Product key={i} product={product} />
-        ))
-      }
-    </div>
-  )
-}
+  const [product, setProduct] = useState([]);
 
-export default HomeScreen
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const res = await axios.get("/api/products");
+      console.log(res);
+    };
+
+    fetchProducts();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 bg-cyan-400">
+      {products.map((product, i) => (
+        <Product key={i} product={product} />
+      ))}
+    </div>
+  );
+};
+
+export default HomeScreen;
