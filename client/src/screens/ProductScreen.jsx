@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { products } from "../data/products";
+
+import axios from "axios";
 
 const ProductScreen = () => {
     const { id } = useParams();
-    const product = products.find((product) => id == product.id);
-    console.log(product);
+    const [product, setProduct] = useState({})
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            const { data } = await axios.get(`/api/product/${id}`)
+            setProduct(data)
+        }
+        fetchProduct()
+    }, [id])
+
     return (
         <div className="container mx-auto mt-8 p-4 bg-orange-200">
             <Link to="/">
@@ -26,7 +35,7 @@ const ProductScreen = () => {
                             ({product.numReviews} reviews)
                         </span>
                     </div>
-                    <p className="text-gray-700 mt-2">₹{product.price.toFixed(2)}</p>
+                    <p className="text-gray-700 mt-2">₹{product?.price?.toFixed(2)}</p>
                     <p className="text-gray-700 mt-2">In Stock: {product.countInStock}</p>
 
                     <div className="mt-4">

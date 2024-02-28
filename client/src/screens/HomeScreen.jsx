@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { products } from "../data/products";
+//import { products } from "../data/products";
 import Product from "../components/Product";
 import axios from 'axios'
 
 const HomeScreen = () => {
-  const [product, setProduct] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await axios.get("/api/products");
-      console.log(res);
+      const {data} = await axios.get("/api/products");
+      setProducts(data)
     };
 
     fetchProducts();
