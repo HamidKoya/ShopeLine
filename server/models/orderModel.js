@@ -91,6 +91,6 @@ const Orderschema = mongoose.Schema(
     }
 );
 
-const Order = mongoose.Model("Order", Orderschema);
+const Order = mongoose.model("Order", Orderschema);
 
 export default Order;
