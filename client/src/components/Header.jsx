@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiShoppingCart, FiUser, FiLogOut, FiLogIn } from "react-icons/fi";
-
+import {  useSelector } from "react-redux";
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+  const {cartItems} = useSelector(state => state.cart)
+  
   return (
     <nav className="bg-gray-800 p-4">
       <div className="flex justify-between items-center bg-red-600">
@@ -23,7 +25,9 @@ const Header = () => {
         </div>
         <div className="hidden sm:flex items-center space-x-4 bg-red-950">
           <Link to="/cart" className="text-white flex items-center">
-            <FiShoppingCart className="mr-1" /> Cart
+            <FiShoppingCart className="mr-1" /> 
+            Cart
+            <span className="bg-blue-500 text-white rounded-full px-2 py-1 ml-2">{cartItems.length}</span>
           </Link>
           <div className="relative group">
             <button
@@ -73,7 +77,9 @@ const Header = () => {
           </button>
           <div className="space-y-2">
             <Link to="/cart" className="text-white flex items-center">
-              <FiShoppingCart className="mr-1" /> Cart
+              <FiShoppingCart className="mr-1" /> 
+              Cart
+              <span className="bg-blue-500 text-white rounded-full px-2 py-1 ml-2">{cartItems.length}</span>
             </Link>
             <div className="relative group">
               <button
