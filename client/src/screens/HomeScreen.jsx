@@ -13,7 +13,7 @@ const HomeScreen = () => {
   }
   return (
     <>
-    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 bg-cyan-400">
+    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 ">
       {products?.map((product, i) => (
         <Product key={i} product={product} />
       ))}

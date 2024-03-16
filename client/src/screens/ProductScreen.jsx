@@ -25,7 +25,7 @@ const ProductScreen = () => {
   };
 
   return (
-    <div className="container mx-auto mt-8 p-4 bg-orange-200">
+    <div className="container mx-auto mt-8 p-4 ">
       <Link to="/">
         <button className="bg-gray-800 px-4 py-2 rounded-md mb-4">
           Go Back

@@ -6,7 +6,7 @@ const Product = ({ product }) => {
   
   return (
     <Link to={`/product/${product._id}`}>
-      <div className="bg-red-300 p-4 shadow-md  rounded-md relative cursor-pointer h-[320px]">
+      <div className=" p-4 shadow-md  bg-white rounded-md relative cursor-pointer h-[320px]">
        
        <button className="  absolute bottom-5 hover:p-2 p-2 rounded-full bg-slate-700 right-10">
     <FaHeart className="text-xl text-white"/>

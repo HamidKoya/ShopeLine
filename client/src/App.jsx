@@ -9,9 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   return (
 
-    <div className="flex flex-col min-h-screen bg-green-300">
+    <div className="flex flex-col min-h-screen " style={{
+      background: 'rgb(238,174,202)',
+      background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'
+    }}>
       <Header />
-      <main className="container py-3 px-8 mx-auto flex-grow bg-indigo-800">
+      <main className="container py-3 px-8 mx-auto flex justify-center items-center flex-grow ">
         <ToastContainer/>
         <Outlet />
       </main>

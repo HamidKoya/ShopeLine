@@ -8,6 +8,8 @@ import HomeScreen from './screens/HomeScreen.jsx'
 import ProductScreen from './screens/ProductScreen.jsx'
 import store from './store.js'
 import CartScreen from './screens/CartScreen.jsx'
+import LoginScreen from './screens/LoginScreen.jsx'
+import ResetPassword from './screens/ResetPassword.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -15,12 +17,14 @@ const router = createBrowserRouter(
       <Route index={true} path='/' element={<HomeScreen />} />
       <Route path='/product/:id' element={<ProductScreen />} />
       <Route path='/cart' element={<CartScreen/>} />
+      <Route path='/login' element={<LoginScreen/>} />
+      <Route path='/reset-password' element={<ResetPassword/>} />
     </Route>
   )
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Provider store={store}>,
+  <Provider store={store}>
     <RouterProvider router={router} />
   </Provider>
 )
