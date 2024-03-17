@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { useLoginMutation } from "../slices/userApiSlice";
+import {
+  useForgotPasswordMutation,
+  useLoginMutation,
+} from "../slices/userApiSlice";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setCredentials } from "../slices/userSlice";
@@ -12,6 +15,9 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
 
   const [login, { isLoading }] = useLoginMutation();
+  const [forgotPassword, { isLoading: isLoadingPassword }] =
+    useForgotPasswordMutation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -19,13 +25,26 @@ const LoginScreen = () => {
     e.preventDefault();
     try {
       const response = await login({ email, password }).unwrap();
-      console.log(response);
       dispatch(setCredentials({ ...response }));
       navigate("/");
       toast.success("Login Successful");
-      console.log(response);
     } catch (error) {
-      toast.error(error?.data?.message || error?.message);
+      toast.error(error?.data?.message || error?.error);
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      alert("Please enter your Email");
+    } else {
+      try {
+        const response = await forgotPassword({ email })
+        toast.success(response?.data?.message);
+      } catch (error) {
+        toast.error(error?.data?.message || error?.error);
+      }
     }
   };
 
@@ -56,14 +75,18 @@ const LoginScreen = () => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              console.log(password);
+            
             }}
           />
         </div>
 
         <p className=" text-xs text-stone-200">
-          Forgot Password? <button className="text-blue-800">Click here</button>
+          Forgot Password?{" "}
+          <button className="text-blue-800" onClick={handleForgotPassword}>
+            Click here
+          </button>
         </p>
+        {isLoading && <Spinner/>}
         <div className="flex flex-col gap-2 p-4  w-full justify-center items-center text-xs">
           <button
             className="px- py-1 w-[60%] bg-stone-50 rounded-lg"

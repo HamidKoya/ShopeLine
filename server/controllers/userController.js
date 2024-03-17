@@ -92,9 +92,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   const resetToken = user.createPasswordResetToken();
   console.log(resetToken);
   user.save();
-  const resetUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/api/users/reset-password/${resetToken}`;
+  const resetUrl = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
   const message = `Forgot Password? Click on this link to reset your password: ${resetUrl}`;
   try {
     await sentEmail({
@@ -119,6 +117,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
+  console.log('token===',+req.params.resetToken);
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.resetToken)
