@@ -27,10 +27,10 @@ function ResetPassword() {
   };
 
   return (
-    <div className=" bg-stone-950 bg-opacity-20 rounded-2xl w-[300px] flex flex-col gap-3 p-3">
+    <div className=" bg-stone-950 bg-opacity-20 rounded-2xl w-[300px] flex flex-col gap-3 p-5">
       <h2 className="text-2xl font-light text-white ">Reset Password</h2>
       <form
-        className="flex flex-col gap-3"
+        className="flex flex-col justify-center gap-3 "
         onSubmit={handleResetPasswordSubmit}
       >
         <div className="flex flex-col gap-1">
@@ -57,9 +57,14 @@ function ResetPassword() {
             className="bg-stone-50 rounded-2xl opacity-35 h-8"
           />
         </div>
-        <button className="bg-white h-8 rounded-2xl" type="submit">
-          submit
-        </button>
+        <div className="flex justify-center items-center p-4">
+          <button
+            className="bg-white w-[60%] rounded-lg text-xs py-1"
+            type="submit"
+          >
+            submit
+          </button>
+        </div>
         {isLoading && <Spinner />}
       </form>
     </div>

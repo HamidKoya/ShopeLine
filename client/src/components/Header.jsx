@@ -1,13 +1,69 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiShoppingCart, FiUser, FiLogOut, FiLogIn } from "react-icons/fi";
-import {  useSelector } from "react-redux";
-import { FaSearch } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { FaCaretDown, FaCaretUp, FaSearch } from "react-icons/fa";
+import { logout } from "../slices/userSlice";
+import { toast } from "react-toastify";
+import { useLogoutMutation } from "../slices/userApiSlice";
+
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
-  const {cartItems} = useSelector(state => state.cart)
-  
+  const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.user);
+  const [logoutApi] = useLogoutMutation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap()
+      dispatch(logout())
+      navigate('/login')
+      toast.success('logged Out Successfully')
+    } catch (error) {
+      toast.error(error?.data?.message || error?.error);
+    }
+  }
+
+  const renderProfileButton = () => {
+    return (
+      <>
+        <button
+          onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
+          className="text-white flex items-center border rounded-md"
+        >
+          <FiUser className="mr-1" /> {userInfo?.name} {isProfileMenuOpen ? <FaCaretUp/> : <FaCaretDown/>}
+        </button>
+        <ul
+          className={`absolute ${
+            isProfileMenuOpen ? "block" : "hidden"
+          } bg-stone-50 bg-opacity-30  px-4 py-2 rounded-md  mt-2 space-y-2 text-black border`}
+        >
+          <li>
+            <Link to="/profile" className="flex items-center">
+              <FiUser className="mr-1 text-xs" /> Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" className="flex items-center" onClick={handleLogout}>
+              <FiLogOut className="mr-1 text-xs" />
+              Logout
+            </Link>
+          </li>
+        </ul>
+      </>
+    );
+  };
+
+  const renderSignInButtton = () => (
+    <Link to="/login" className="flex items-center">
+      <FiLogIn className="mr-1 text-white"/>
+      <button className="text-white">Sign In</button>
+    </Link>
+  )
+
   return (
     <nav className="bg-gray-800 p-4 bg-opacity-20">
       <div className="flex justify-between items-center ">
@@ -21,41 +77,22 @@ const Header = () => {
             className="ml-4 p-2 bg-stone-50 bg-opacity-80 rounded-lg text-black hidden sm:block"
           />
           <button className="text-xl text-white py-2 px-4 rounded-md hidden sm:block ml-2">
-            <FaSearch/>
+            <FaSearch />
           </button>
         </div>
         <div className="hidden sm:flex items-center text-md font-light space-x-4">
-          <Link to="/cart" className="text-white  relative py-3 flex items-center">
-            <FiShoppingCart className="mr-1 " /> 
+          <Link
+            to="/cart"
+            className="text-white  relative py-3 flex items-center"
+          >
+            <FiShoppingCart className="mr-1 " />
             Cart
-            <span className="bg-blue-500 top-[-5px] right-[-5px] absolute text-[10px] text-white rounded-full p-1 px-2 ml-2">{cartItems.length}</span>
+            <span className="bg-blue-500 top-[-5px] right-[-5px] absolute text-[10px] text-white rounded-full p-1 px-2 ml-2">
+              {cartItems.length}
+            </span>
           </Link>
-          <div className="relative group">
-            <button
-              onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
-              className="text-white flex items-center"
-            >
-              <FiUser className="mr-1" /> Profile
-            </button>
-            <ul
-              className={`absolute ${isProfileMenuOpen ? "block" : "hidden"
-                } bg-stone-50 bg-opacity-30  px-4 py-2 rounded-lg  mt-2 space-y-2 text-black`}
-            >
-              <li >
-                <Link to="/profile" className="flex items-center">
-                  <FiUser className="mr-1 text-xs" /> Profile
-                </Link>
-              </li>
-              <li>
-                <Link to="/logout" className="flex items-center">
-                  <FiLogOut className="mr-1 text-xs" />
-                  Logout
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <button className="text-white">Sign In</button>
+          {userInfo && <div className="relative group">{renderProfileButton()}</div>}
+          {!userInfo && renderSignInButtton()}
         </div>
         <div className="sm:hidden">
           <button
@@ -78,36 +115,14 @@ const Header = () => {
           </button>
           <div className="space-y-2">
             <Link to="/cart" className="text-white flex items-center">
-              <FiShoppingCart className="mr-1" /> 
+              <FiShoppingCart className="mr-1" />
               Cart
-              <span className="bg-blue-500 text-white rounded-full px-2 py-1 ml-2">{cartItems.length}</span>
+              <span className="bg-blue-500 text-white rounded-full px-2 py-1 ml-2">
+                {cartItems.length}
+              </span>
             </Link>
-            <div className="relative group">
-              <button
-                onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
-                className="text-white flex items-center"
-              >
-                <FiUser className="mr-1" /> Profile
-              </button>
-              <ul
-                className={`absolute ${isProfileMenuOpen ? "block" : "hidden"
-                  } bg-gray-800 p-2 mt-2 space-y-2 text-white`}
-              >
-                <li>
-                  <Link to="/profile">
-                    <FiUser className="mr-1" />
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/logout">
-                    <FiLogOut className="mr-1" />
-                    logout
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <button className="text-white"> Sign In</button>
+            {userInfo && <div className="relative group">{renderProfileButton()}</div>}
+            {!userInfo && renderSignInButtton()}
           </div>
         </div>
       )}

@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "../slices/userSlice";
 import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
+
 
 const RegisterScreen = () => {
   const [name, setName] = useState("");
@@ -90,12 +92,12 @@ const RegisterScreen = () => {
             }}
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <button className="bg-white rounded-full h-8" type="submit">
+        <div className="flex flex-col gap-2 p-4 w-full justify-center items-center text-xs">
+          <button className="py-1 bg-white w-[60%] rounded-lg" type="submit">
             Register
           </button>
-          <button>Sign up  with Google</button>
-        </div>
+          <button className="flex justify-center items-center gap-1 py-1 px-2">Sign up with<FcGoogle className="text-xl"/> </button>
+        </div> 
         {isLoading && <Spinner />}
       </form>
       <p className=" text-xs text-stone-200">

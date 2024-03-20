@@ -1,16 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import {
   useForgotPasswordMutation,
   useLoginMutation,
 } from "../slices/userApiSlice";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { setCredentials } from "../slices/userSlice";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
 
 const LoginScreen = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {userInfo} = useSelector(state => state.user)
+  const {search} = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const redirect = searchParams.get('redirect') || "/"
+
+  useEffect(()=> {
+    if(userInfo) {
+      navigate(redirect)
+    }
+  },[navigate,redirect,userInfo])
+
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,8 +32,7 @@ const LoginScreen = () => {
   const [forgotPassword, { isLoading: isLoadingPassword }] =
     useForgotPasswordMutation();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+ 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -89,15 +102,14 @@ const LoginScreen = () => {
         {isLoading && <Spinner/>}
         <div className="flex flex-col gap-2 p-4  w-full justify-center items-center text-xs">
           <button
-            className="px- py-1 w-[60%] bg-stone-50 rounded-lg"
+            className="py-1 w-[60%] bg-stone-50 rounded-lg"
             type="submit"
             disabled={isLoading}
           >
             Login
           </button>
           <button className="px-2 text-white py-1 flex items-center gap-2  rounded-lg">
-            <FcGoogle className="text-xl" />
-            Sign in with Google{" "}
+            Sign in with <FcGoogle className="text-xl" />
           </button>
         </div>
         {isLoading && <Spinner />}
