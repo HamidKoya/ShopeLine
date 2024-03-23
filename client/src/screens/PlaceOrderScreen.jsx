@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const PlaceOrderScreen = () => {
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
   const {
@@ -27,39 +27,37 @@ const PlaceOrderScreen = () => {
     totalPrice,
   } = cart;
 
-
   const handlePlaceOrder = async () => {
     try {
       const res = await createOrder({
         orderItems: cartItems,
         shippingAddress: {
-            address,
-            city,
-            postalCode,
-            country,
-            itemsPrice,
-            shippingPrice,
-            taxPrice,
-          },
+          address,
+          city,
+          postalCode,
+          country,
+          itemsPrice,
+          shippingPrice,
+          taxPrice,
+        },
         paymentMethod,
         itemsPrice,
         shippingPrice,
         taxPrice,
-        totalPrice
+        totalPrice,
       }).unwrap();
       console.log(res);
-      toast.success('Order Placed!')
-      dispatch(clearCartItems())
+      toast.success("Order Placed!");
+      dispatch(clearCartItems());
       
-      //navigate(`/order/${res._id}`)
+      navigate(`/order/${res._id}`);
+
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
   };
   return (
-    
     <div className="flex flex-col md:flex-row justify-between p-7 gap-5">
-        
       <div className="bg-stone-50 bg-opacity-20 flex flex-col p-4 md:w-1/5">
         <h2 className="text-2xl font-semibold">Place Order</h2>
         <div className="mb-4">
@@ -105,7 +103,6 @@ const PlaceOrderScreen = () => {
         </button>
         {isLoading && <Spinner />}
       </div>
-      
     </div>
   );
 };

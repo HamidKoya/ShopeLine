@@ -32,6 +32,9 @@ const LoginScreen = () => {
   const [forgotPassword, { isLoading: isLoadingPassword }] =
     useForgotPasswordMutation();
 
+    console.log(useLoginMutation());
+    
+
  
 
   const handleLogin = async (e) => {

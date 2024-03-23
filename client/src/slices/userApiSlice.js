@@ -41,6 +41,15 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    updateUserPorifle: builder.mutation({
+      query: data => ({
+        url: `${USERS_URL}/update`,
+        method: "POST",
+        body:data
+      })
+    }),
+
   }),
 });
 
@@ -49,5 +58,6 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useRegisterMutation,
-  useLogoutMutation
+  useLogoutMutation,
+  useUpdateUserPorifleMutation,
 } = userApiSlice;
