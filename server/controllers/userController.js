@@ -50,7 +50,6 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 //update User Profile
-
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.body._id);
   if (user) {
@@ -63,6 +62,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
     });
+    
   } else {
     res.status(404);
     throw new Error("User Not Found");
