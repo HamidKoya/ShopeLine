@@ -7,17 +7,21 @@ import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import { errorHandler , notFound} from "./middleware/errorMiddleware.js";
 import cookieParser from "cookie-parser";
+import stripe from './utils/stripe.js'
 
 
 dotenv.config();
 connectBD();
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+
+stripe(app)
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

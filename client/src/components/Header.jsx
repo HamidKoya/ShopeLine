@@ -10,6 +10,7 @@ import { useLogoutMutation } from "../slices/userApiSlice";
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [isAdminMenuOpen, setAdminMenuOpen] = useState(false);
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.user);
   const [logoutApi] = useLogoutMutation()
@@ -44,6 +45,46 @@ const Header = () => {
           <li>
             <Link to="/profile" className="flex items-center">
               <FiUser className="mr-1 text-xs" /> Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" className="flex items-center" onClick={handleLogout}>
+              <FiLogOut className="mr-1 text-xs" />
+              Logout
+            </Link>
+          </li>
+        </ul>
+      </>
+    );
+  };
+
+  const renderAdminButton = () => {
+    return (
+      <>
+        <button
+          onClick={() => setAdminMenuOpen(!isAdminMenuOpen)}
+          className="text-white flex items-center border rounded-md"
+        >
+          <FiUser className="mr-1" /> Admin {isAdminMenuOpen ? <FaCaretUp/> : <FaCaretDown/>}
+        </button>
+        <ul
+          className={`absolute ${
+            isAdminMenuOpen ? "block" : "hidden"
+          } bg-stone-50 bg-opacity-30  px-4 py-2 rounded-md  mt-2 space-y-2 text-black border`}
+        >
+          <li>
+            <Link to="/admin/users" className="flex items-center">
+             Users
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/products" className="flex items-center">
+              Products
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/orders" className="flex items-center">
+               Orders
             </Link>
           </li>
           <li>
@@ -92,6 +133,7 @@ const Header = () => {
             </span>
           </Link>
           {userInfo && <div className="relative group">{renderProfileButton()}</div>}
+          {userInfo?.isAdmin && <div className="relative group">{renderAdminButton()}</div>}
           {!userInfo && renderSignInButtton()}
         </div>
         <div className="sm:hidden">
@@ -122,6 +164,7 @@ const Header = () => {
               </span>
             </Link>
             {userInfo && <div className="relative group">{renderProfileButton()}</div>}
+            {userInfo?.isAdmin && <div className="relative group">{renderAdminButton()}</div>}
             {!userInfo && renderSignInButtton()}
           </div>
         </div>

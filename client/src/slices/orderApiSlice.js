@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice.js";
-import { ORDERS_URL } from "../constants.js";
+import {  BACKEND_URL, ORDERS_URL } from "../constants.js";
 
 export const orderApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -22,8 +22,28 @@ export const orderApiSlice = apiSlice.injectEndpoints({
         url: `${ORDERS_URL}/user-orders`,
       }),
       keepUnusedDataFor: 5,
+    }),
+    payWithStripe : builder.mutation({
+      query: orderItems => ({
+        url:`${BACKEND_URL}/create-checkout-session`,
+        method: "POST",
+        body:orderItems,
+      })
+    }),
+    getOrders: builder.query({
+      query: () => ({
+        url: ORDERS_URL,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+    deliverOrder:builder.mutation({
+      query: OrderId => ({
+        url: `${ORDERS_URL}/deliver/${OrderId}`,
+        method: "PATCH"
+      }),
+      
     })
   }),
 });
 
-export const { useCreateOrderMutation,useGetOrderDetailsQuery,useGetUserOrdersQuery } = orderApiSlice;
+export const { useCreateOrderMutation,useGetOrderDetailsQuery,useGetUserOrdersQuery,usePayWithStripeMutation, useGetOrdersQuery,useDeliverOrderMutation} = orderApiSlice;

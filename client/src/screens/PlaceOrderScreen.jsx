@@ -83,17 +83,17 @@ const PlaceOrderScreen = () => {
           <tbody>
             {cartItems.map((item) => (
               <tr key={item._id} className="border-b border-gray-400">
-                <th className="text-left">{item.name}</th>
-                <th className="text-right">{item.qty}</th>
-                <th className="text-right">
-                  {(item.price * item.qty).toFixed(2)}
-                </th>
+                <td className="text-left">{item.name}</td>
+                <td className="text-right">{item.qty}</td>
+                <td className="text-right">
+                ₹{(item.price * item.qty).toFixed(2)}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
         <div>
-          <p className="text-right font-semibold">Total:{totalPrice}</p>
+          <p className="text-right font-semibold">Total:₹{totalPrice}</p>
         </div>
         <button
           className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded w-full mt-4"

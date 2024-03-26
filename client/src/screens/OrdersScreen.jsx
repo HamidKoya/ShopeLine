@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetOrderDetailsQuery } from "../slices/orderApiSlice";
+import { useDeliverOrderMutation, useGetOrderDetailsQuery, usePayWithStripeMutation } from "../slices/orderApiSlice";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {toast} from'react-toastify'
@@ -15,10 +15,13 @@ const OrdersScreen = () => {
     error,
     refetch,
   } = useGetOrderDetailsQuery(orderId);
+
+  const [payWithStripe, {isLoading:loadingStripe}] = usePayWithStripeMutation()
+  const [deliverOrder,{isLoading:loadingDeliver}] = useDeliverOrderMutation()
   
 
   if(error) {
-    return toast.error(error.message)
+    return toast.error(error?.message)
   }
   if(isLoading){
     return <Spinner />
@@ -26,11 +29,24 @@ const OrdersScreen = () => {
 
   
 
-  const { shippingAddress, user, isDelivered, orderItems } = order;
+  const { shippingAddress, user, isDelivered, orderItems,shippingPrice,taxPrice } = order;
   const calculateTotal = (orderItems) =>(
     orderItems.reduce((acc,item)=> acc + item.qty * item.price,0)
   )
-  console.log(isDelivered);
+  
+  const handleStripePayment = async (orderItems) => {
+    try {
+      const res = await payWithStripe(orderItems).unwrap()
+      window.location.href = res.url
+    } catch (error) {
+      toast.error(error?.data?.message || error?.error)
+    }
+  }
+
+  const handleDeliverOrder = async (orderId) => {
+     await deliverOrder(orderId)
+     refetch()
+  }
 
   return (
     <div className="flex flex-col md:flex-row justify-center items-start">
@@ -44,7 +60,7 @@ const OrdersScreen = () => {
           <h3 className="text-lg font-semibold mb-2">Shipping Details:</h3>
           <p>Name:{user.name}</p>
           <p>Email:{user.email}</p>
-          <p>Address:{shippingAddress.address}</p>
+          <p>Address:{shippingAddress?.address}</p>
         </div>
         <div className="mb-4">
           <h3 className="text-lg font-semibold mb-2">Order Status:</h3>
@@ -63,23 +79,34 @@ const OrdersScreen = () => {
             </tr>
           </thead>
           <tbody>
-            {orderItems.map((item) => (
+            {orderItems?.map((item) => (
               <tr key={item._id} className="border-b border-gray-400">
-                <th className="text-left">{item.name}</th>
-                <th className="text-right">{item.qty}</th>
-                <th className="text-right">{item.price}</th>
+                <td className="text-left">{item.name}</td>
+                <td className="text-right">{item.qty}</td>
+                <td className="text-right">₹{(item.price * item.qty).toFixed(2)}</td>
               </tr>
             ))}
+            <tr className="border-b border-gray-400">
+              <td className="text-left font-semibold">Shipping</td>
+              <td className="text-right"></td>
+              <td className="text-right">₹{shippingPrice}</td>
+            </tr>
+            <tr className="border-b border-gray-400">
+              <td className="text-left font-semibold">Tax</td>
+              <td className="text-right"></td>
+              <td className="text-right">₹{taxPrice}</td>
+            </tr>
           </tbody>
         </table>
         <div className="mt-4">
-          <p className="text-right font-semibold">Total:{calculateTotal(orderItems).toFixed(2)}</p>
+          <p className="text-right font-semibold">Total:₹{+calculateTotal(orderItems).toFixed(2) + +shippingPrice + +taxPrice}</p>
         </div>
         <div className="flex justify-start items-center ">
-          <button className="bg-blue-500  text-white px-4 py-2 mr-3 rounded-md">
+          <button className="bg-blue-500  text-white px-4 py-2 mr-3 rounded-md" onClick={()=> handleStripePayment(orderItems)}>
             Pay with Stripe
           </button>
-          {userInfo.isAdmin && !order.isDelivered && <button className="bg-black text-white px-4 py-2 rounded-md">
+          {loadingStripe && <Spinner/>}
+          {userInfo.isAdmin && !order.isDelivered && <button className="bg-black text-white px-4 py-2 rounded-md" onClick={()=>handleDeliverOrder(orderId)}>
             Mark as Delivered
           </button>}
         </div>
