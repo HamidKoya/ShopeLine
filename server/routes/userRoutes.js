@@ -1,8 +1,10 @@
 import express from 'express';
 const  router = express.Router()
 
-import { forgotPassword, loginUser,logoutUser,registerUser, resetPassword, updateUserProfile } from '../controllers/userController.js';
-
+import { deleteUser, forgotPassword, getUserById, getUsers, loginUser,logoutUser,registerUser, resetPassword, updateUser, updateUserProfile } from '../controllers/userController.js';
+import { admin, protect } from "../middleware/authMiddleware.js";
+router.route("/").get(protect,admin,getUsers)
+router.route("/:id").put(protect,admin,updateUser).get(protect,admin,getUserById).delete(protect,admin,deleteUser)
 router.route('/register').post(registerUser)
 router.route('/login').post(loginUser)
 router.route('/update').put(updateUserProfile)

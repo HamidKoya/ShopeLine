@@ -1,23 +1,48 @@
-import React, { useState } from 'react'
-import { useUpdateProductMutation } from '../../slices/productsApiSlice'
+import React, { useMemo, useState } from 'react'
+import { useGetProductDetailsQuery, useUpdateProductMutation, useUploadFileHandlerMutation } from '../../slices/productsApiSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import Spinner from '../../components/Spinner'
 
 const ProductEditScreen = () => {
     const {productId} = useParams()
     const navigate = useNavigate()
-    const [updateProduct,{isLoading:loadingUpdate},refetch,error] = useUpdateProductMutation()
-
+    const {data:product,isLoading:loadingProduct,error} = useGetProductDetailsQuery(productId)
+    const [updateProduct,{isLoading:loadingUpdate,isSuccess},refetch] = useUpdateProductMutation()
+    const [uploadProductImage,{isLoading:uploadLoading}] = useUploadFileHandlerMutation()
+    console.log(product);
     const [productData,setProductData] = useState({
-        name: "",
-        price: 0,
-        image: null,
-        brand:"",
-        category:"",
-        countInStock:0,
-        description:""
-    })
+        
+        name: product?.name,
+        price: product?.price,
+        image: product?.image,
+        brand: product?.brand,
+        category:product?.category,
+        countInStock:product?.countInStock,
+        description: product?.description
+    
+})
 
+    useMemo(()=>{
+
+        setProductData({
+        
+            name: product?.name,
+            price: product?.price,
+            image: product?.image,
+            brand: product?.brand,
+            category:product?.category,
+            countInStock:product?.countInStock,
+            description: product?.description
+        
+    })
+    },[product])
+  
+   
+        
+    
+    
+    console.log("productData",productData)
     const {name,price,image,brand,category,countInStock,description} = productData
 
     const handleInputChange = (e) => {
@@ -36,6 +61,18 @@ const ProductEditScreen = () => {
          navigate("/admin/products")
          refetch()
         
+        } catch (error) {
+            toast.error(error?.data?.message || error?.error)
+        }
+    }
+
+    const uploadFileHandler = async e => {
+        const formData = new FormData()
+        formData.append('image', e.target.files[0])
+        try {
+            const res = await uploadProductImage(formData).unwrap()
+            toast.success(res.message)
+
         } catch (error) {
             toast.error(error?.data?.message || error?.error)
         }
@@ -79,6 +116,8 @@ const ProductEditScreen = () => {
                         type="file"
                         id="image"
                         name="image"
+                        accept='image/*'
+                        onChange={uploadFileHandler}
                         className="w-full border border-gray-300 p-2 rounded-md"
                     />
                 </div>
@@ -139,6 +178,7 @@ const ProductEditScreen = () => {
                     >
                         Update Product
                     </button>
+                    {uploadLoading && <Spinner/>}
                 </div>
             </form>
             

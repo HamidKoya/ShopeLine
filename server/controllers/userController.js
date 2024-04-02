@@ -147,6 +147,46 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 });
 
+const getUsers = asyncHandler(async(req,res)=>{
+  const users = await User.find()
+  res.json(users)
+})
+//Admin
+const updateUser = asyncHandler(async (req,res) => {
+  console.log("reached");
+  const user = await User.findById(req.params.id)
+  if(user){
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    user.isAdmin = Boolean(req.body.isAdmin)
+    await user.save()
+    res.json({message: "user updated successfully"})
+  }else{
+    res.status(404)
+    throw new Error("user not found")
+  }
+})
+
+const getUserById = asyncHandler(async(req,res)=> {
+      const user = await User.findById(req.params.id)
+      if(user){
+        res.status(200).json(user)
+      }else{
+        res.status(404)
+        throw new Error("User not Found")
+      }
+})
+
+const deleteUser = asyncHandler(async(req,res)=>{
+  const user = await User.findById(req.params.id)
+  if(user){
+    await User.deleteOne({_id:req.params.id})
+    res.status(204).json({message:"User deleted Successfully"})
+  }else{
+    res.status(404)
+    throw new Error("User not Found")
+  }
+})
 
  
 export {
@@ -156,4 +196,8 @@ export {
   logoutUser,
   forgotPassword,
   resetPassword,
+  getUsers,
+  updateUser,
+  getUserById,
+  deleteUser
 };

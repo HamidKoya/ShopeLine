@@ -4,6 +4,7 @@ import asyncHandler from "express-async-handler";
 
 const getProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({});
+  console.log("dat-----------")
   res.json(products);
 });
 const getProductById = asyncHandler(async (req, res) => {
@@ -12,7 +13,7 @@ const getProductById = asyncHandler(async (req, res) => {
     res.json(product);
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error("Product no found");
   }
 });
 
@@ -22,7 +23,7 @@ const createProduct = asyncHandler(async (req, res) => {
       name: "sampleName",
       price: 0,
       user: req.user._id,
-      image: "images/sample/.jpg",
+      image: req.file?.filename||" ",
       brand: "Sample Brand",
       category: "sample Category",
       countInStock: 0,
@@ -38,10 +39,11 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.productId)
+  
+  const product = await Product.findById(req.params.id)
   if (product) {
     await Product.deleteOne({ _id: product._id })
-    res.status(204).json({ message: "Product Deleted" })
+    res.json({ message: "Product Deleted" })
 
   } else {
     res.status(404)
